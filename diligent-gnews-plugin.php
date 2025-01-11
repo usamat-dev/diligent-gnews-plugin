@@ -54,44 +54,30 @@ function dn_add_custom_menu() {
 add_action( 'admin_menu', 'dn_add_custom_menu' );
 
 function dn_render_settings_page() {
+    if ( isset( $_POST['dn_gnews_api_key'] ) ) {
+        // Save the API key to options table
+        update_option( 'dn_gnews_api_key', sanitize_text_field( $_POST['dn_gnews_api_key'] ) );
+    }
+
+    // Get the saved API key
+    $api_key = get_option( 'dn_gnews_api_key', '' );
+
     ?>
     <div class="wrap">
         <h1><?php esc_html_e( 'Diligent GNews Settings', 'diligent-gnews' ); ?></h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields( 'dn_gnews_settings_group' );
-            do_settings_sections( 'diligent-gnews-settings' );
-            submit_button();
-            ?>
+        <form method="post">
+            <?php wp_nonce_field( 'dn_gnews_settings_nonce', 'dn_gnews_nonce' ); ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row"><?php esc_html_e( 'API Key', 'diligent-gnews' ); ?></th>
+                    <td>
+                        <input type="password" name="dn_gnews_api_key" value="<?php echo esc_attr( $api_key ); ?>" class="regular-text">
+                    </td>
+                </tr>
+            </table>
+            <?php submit_button( __( 'Save Settings', 'diligent-gnews' ) ); ?>
         </form>
     </div>
     <?php
 }
 
-// Register settings
-function dn_register_settings() {
-    register_setting( 'dn_gnews_settings_group', 'dn_gnews_api_key' );
-
-    add_settings_section(
-        'dn_gnews_settings_section',
-        __( 'API Configuration', 'diligent-gnews' ),
-        null,
-        'diligent-gnews-settings'
-    );
-
-    add_settings_field(
-        'dn_gnews_api_key',
-        __( 'API Key', 'diligent-gnews' ),
-        'dn_gnews_api_key_callback',
-        'diligent-gnews-settings',
-        'dn_gnews_settings_section'
-    );
-}
-add_action( 'admin_init', 'dn_register_settings' );
-
-function dn_gnews_api_key_callback() {
-    $api_key = get_option( 'dn_gnews_api_key', '' );
-    ?>
-    <input type="password" name="dn_gnews_api_key" value="<?php echo esc_attr( $api_key ); ?>" class="regular-text">
-    <?php
-}
