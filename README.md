@@ -16,7 +16,7 @@ A WordPress plugin designed to fetch and publish news articles using the [GNews 
 1. Download the plugin files.
 2. Upload the `diligent-gnews-plugin` folder to the `/wp-content/plugins/` directory.
 3. Activate the plugin through the 'Plugins' menu in WordPress.
-4. Navigate to **Settings > GNews API** to configure the API key.
+4. Navigate to **Diligent GNews** to configure the API key.
 
 
 
